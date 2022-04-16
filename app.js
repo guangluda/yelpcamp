@@ -23,8 +23,12 @@ const reviewRoutes = require('./routes/reviews');
 
 // const dbUrl = process.env.DB_URL;
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
-// mongoose.connect(dbUrl);
+// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
 mongoose.connect(dbUrl);
+// mongoose.connect(dbUrl,{
+//     useNewUrlParser:true,
+//     useUnifiedTopology:true,
+// });
 // mongoose.connect('mongodb://localhost:27017/yelp-camp');
 
 const db = mongoose.connection;
@@ -75,33 +79,32 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-app.use(helmet());
+// app.use(helmet());
 
+app.use(helmet({
+    crossOriginEmbedderPolicy:false,
+}));
 const scriptSrcUrls = [
-    "https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css",
-    "https://stackpath.bootstrapcdn.com/",
-    "https://api.tiles.mapbox.com/",
-    "https://api.mapbox.com/",
-    "https://kit.fontawesome.com/",
-    "https://cdnjs.cloudflare.com/",
+    "https://stackpath.bootstrapcdn.com",
+    "https://api.tiles.mapbox.com",
+    "https://api.mapbox.com",
+    "https://kit.fontawesome.com",
+    "https://cdnjs.cloudflare.com",
     "https://cdn.jsdelivr.net",
 ];
 const styleSrcUrls = [
-    "https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css",
     "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
-    "https://kit-free.fontawesome.com/",
-    "https://stackpath.bootstrapcdn.com/",
-    "https://api.mapbox.com/",
-    "https://api.tiles.mapbox.com/",
-    "https://fonts.googleapis.com/",
-    "https://use.fontawesome.com/",
+    "https://kit-free.fontawesome.com",
+    "https://stackpath.bootstrapcdn.com",
+    "https://api.mapbox.com",
+    "https://api.tiles.mapbox.com",
+    "https://fonts.googleapis.com",
+    "https://use.fontawesome.com",
 ];
 const connectSrcUrls = [
-    "https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css",
-    "https://api.mapbox.com/",
-    "https://a.tiles.mapbox.com/",
-    "https://b.tiles.mapbox.com/",
-    "https://events.mapbox.com/",
+    "https://api.mapbox.com",
+    "https://*.tiles.mapbox.com",
+    "https://events.mapbox.com",
 ];
 const fontSrcUrls = [];
 app.use(
@@ -112,20 +115,27 @@ app.use(
             scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
             workerSrc: ["'self'", "blob:"],
+            childSrc: ["blob:"],
             objectSrc: [],
             imgSrc: [
                 "'self'",
                 "blob:",
                 "data:",
                 "https://res.cloudinary.com/do2m8d7kl/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
-                "https://images.unsplash.com/",
+                "https://images.unsplash.com",
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
         },
     })
 );
 
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin"}));
+// app.use(
+//     helmet({
+//       contentSecurityPolicy: false,
+//     })
+//   );
+
+// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin"}));
 
 
 
